@@ -1,39 +1,36 @@
-import { redirect } from "next/navigation";
-import { db } from "@/db";
+"use client";
 
-export default function RecipeCreatePage() {
-  async function createRecipe(formData: FormData) {
-    // This needs to be a server action
-    "use server";
+import type { Recipe } from "@/generated/prisma";
+import { editRecipe } from "@/actions";
+import { startTransition } from "react";
 
-    // Check the user's input and make sure they are valid
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+interface RecipeEditFormProps {
+  recipe: Recipe;
+}
 
-    console.log(name, description);
+export default function RecipeEditForm({ recipe }: RecipeEditFormProps) {
+  console.log(recipe);
 
-    // Create a new recipe and save to the database
-    const recipe = await db.recipe.create({
-      data: {
-        name,
-        description,
-      },
+  const handleEdit = (formData: FormData) => {
+    // startTransition ensures that the action is done in order
+    startTransition(async () => {
+      await editRecipe(recipe.id, formData);
     });
-
-    console.log(recipe);
-
-    // Redirect to the home page
-    redirect("/recipes");
-  }
+  };
 
   return (
-    <form className="flex flex-col gap-2" action={createRecipe}>
+    <form className="flex flex-col gap-2" action={handleEdit}>
       <h3 className="font-bold">Create a recipe</h3>
       <div className="flex gap-4">
         <label className="w-24" htmlFor="name">
           Name
         </label>
-        <input id="title" className="border rounded p-2 w-full" name="name" />
+        <input
+          id="title"
+          className="border rounded p-2 w-full"
+          name="name"
+          defaultValue={recipe.name}
+        />
       </div>
       <div className="flex gap-4">
         <label className="w-24" htmlFor="description">
@@ -43,6 +40,7 @@ export default function RecipeCreatePage() {
           id="description"
           className="border rounded p-2 w-full"
           name="description"
+          defaultValue={recipe.description || ""}
         />
       </div>
       <div className="flex gap-4">
@@ -67,7 +65,7 @@ export default function RecipeCreatePage() {
       </div>
 
       <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-        Create
+        Save
       </button>
     </form>
   );

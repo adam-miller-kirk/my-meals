@@ -1,13 +1,10 @@
-import { PrismaClient } from "@prisma/client/extension";
+import { PrismaClient } from "@/generated/prisma";
 
 export const db = new PrismaClient();
 
 db.recipe.create({
   data: {
     name: "My Student Meal",
-    description: "A taste meal of air",
-    ingredients: [],
-    instructions: [],
-    plannerDays: [],
+    description: "A tastey meal of air",
   },
 });
