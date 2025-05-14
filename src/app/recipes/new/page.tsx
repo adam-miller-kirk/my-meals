@@ -1,33 +1,23 @@
-import { redirect } from "next/navigation";
-import { db } from "@/db";
+"use client";
+
+import React, { useActionState, startTransition } from "react";
+import { createRecipe } from "@/actions";
 
 export default function RecipeCreatePage() {
-  async function createRecipe(formData: FormData) {
-    // This needs to be a server action
-    "use server";
+  const [formState, action] = useActionState(createRecipe, { message: "" });
 
-    // Check the user's input and make sure they are valid
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    console.log(name, description);
+    const formData = new FormData(event.currentTarget);
 
-    // Create a new recipe and save to the database
-    const recipe = await db.recipe.create({
-      data: {
-        name,
-        description,
-      },
+    startTransition(() => {
+      action(formData);
     });
-
-    console.log(recipe);
-
-    // Redirect to the home page
-    redirect("/recipes");
   }
 
   return (
-    <form className="flex flex-col gap-2" action={createRecipe}>
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
       <h3 className="font-bold">Create a recipe</h3>
       <div className="flex gap-4">
         <label className="w-24" htmlFor="name">
@@ -65,6 +55,12 @@ export default function RecipeCreatePage() {
           name="instructions"
         />
       </div>
+
+      {formState.message && (
+        <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+          {formState.message}
+        </div>
+      )}
 
       <button type="submit" className="rounded p-2 bg-blue-200 w-full">
         Create
