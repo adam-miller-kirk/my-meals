@@ -2,6 +2,7 @@
 
 import { db } from "@/db";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function createRecipe(_: { message: string }, formData: FormData) {
   try {
@@ -40,8 +41,8 @@ export async function createRecipe(_: { message: string }, formData: FormData) {
     }
   }
 
-  // Redirect to the home page (NOTE redirect acts weird with try and catch so moved here)
-  redirect("/recipes");
+  revalidatePath("/recipes"); // data change so get new cache version
+  redirect("/recipes"); // NOTE redirect acts weird with try and catch so moved here
 }
 
 export async function editRecipe(id: string, formData: FormData) {
@@ -60,6 +61,7 @@ export async function editRecipe(id: string, formData: FormData) {
     },
   });
 
+  revalidatePath(`/recipes/${id}`); // data change so get new cache version
   redirect(`/recipes/${id}`);
 }
 
@@ -69,5 +71,6 @@ export async function deleteRecipe(id: string) {
     where: { id },
   });
 
+  revalidatePath("/recipes"); // data change so get new cache version
   redirect("/recipes");
 }

@@ -43,3 +43,13 @@ export default async function RecipePage(props: RecipePageProps) {
     </div>
   );
 }
+
+export async function generateStaticParams() {
+  const recipes = await db.recipe.findMany();
+
+  return recipes.map((recipe) => {
+    return {
+      id: recipe.id,
+    };
+  });
+}
