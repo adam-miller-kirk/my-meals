@@ -24,8 +24,17 @@ export default async function RecipePage(props: RecipePageProps) {
 
   return (
     <div className="flex flex-col">
-      <div className="flex m-4 justify-between items-center">
-        <h1 className="text-xl font-bold">{recipe.name}</h1>
+      <div className="flex mb-4 justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <Link
+            className="p-2 border rounded"
+            href={`/recipes`}
+          >
+            Back
+          </Link>
+          <h1 className="text-xl font-bold">{recipe.name}</h1>
+        </div>
+        
         <div className="flex gap-4">
           <Link
             className="p-2 border rounded"
