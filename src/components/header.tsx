@@ -25,6 +25,9 @@ export default function Header() {
             <Link href="/recipes" className={linkClass("/recipes")}>
                 Recipes
             </Link>
+            <Link href="/ingredients" className={linkClass("/ingredients")}>
+                Ingredients
+            </Link>
         </div>
     );
 }

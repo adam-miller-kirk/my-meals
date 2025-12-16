@@ -8,3 +8,11 @@ db.recipe.create({
         description: "A tastey meal of air",
     },
 });
+
+db.ingredient.create({
+    data: {
+        name: "My Student Meal",
+        description: "A tastey meal of air",
+        weight: "100",
+    },
+});

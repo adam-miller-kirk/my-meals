@@ -43,22 +43,6 @@ export default function RecipeEditForm({ recipe }: RecipeEditFormProps) {
                     defaultValue={recipe.description || ""}
                 />
             </div>
-            <div className="flex gap-4">
-                <label className="w-24" htmlFor="ingredients">
-                    Ingredients
-                </label>
-                <input id="ingredients" className="border rounded p-2 w-full" name="ingredients" />
-            </div>
-            <div className="flex gap-4">
-                <label className="w-24" htmlFor="instructions">
-                    Instructions
-                </label>
-                <input
-                    id="instructions"
-                    className="border rounded p-2 w-full"
-                    name="instructions"
-                />
-            </div>
 
             <button type="submit" className="rounded p-2 bg-blue-200 w-full">
                 Save

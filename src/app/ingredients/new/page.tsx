@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useActionState, startTransition, useState } from "react";
-import { createRecipe } from "@/actions";
+import { createIngredient } from "@/actions";
 
 import { Ingredient } from "@/generated/prisma";
 
-export default function RecipeCreatePage() {
-    const [formState, action] = useActionState(createRecipe, { message: "" });
+const inputStyle = "border rounded p-2 w-full";
+
+export default function IngredientCreatePage() {
+    const [formState, action] = useActionState(createIngredient, { message: "" });
     const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]);
     const [newIngredient, setNewIngredient] = useState({
         name: "",
@@ -17,47 +19,35 @@ export default function RecipeCreatePage() {
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        console.log(event.currentTarget);
         const formData = new FormData(event.currentTarget);
-        console.log("page formDate", formData);
-
         formData.append("ingredients", JSON.stringify(newIngredients));
-
-        console.log("newIngredients", newIngredients);
 
         startTransition(() => {
             action(formData);
         });
     }
 
-    function increaseIngredient() {
-        const newIngredient: Ingredient = {
-            id: `item-${newIngredients.length + 1}`,
-            name: `item-${newIngredients.length + 1}`,
-            description: null,
-            weight: "",
-            recipeId: null,
-            instructionId: null,
-        };
-        setNewIngredients([...newIngredients, newIngredient]);
-    }
-
     return (
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-            <h3 className="font-bold">Create a recipe</h3>
+            <h3 className="font-bold">Create a ingredient</h3>
 
-            <div className="flex gap-4">
-                <label className="w-24" htmlFor="name">
-                    Name
-                </label>
-                <input id="title" className="border rounded p-2 w-full" name="name" />
-            </div>
+            <div className="flex gap-2 items-center my-1">
+                <div className="flex gap-4">
+                    <input className={inputStyle} id="title" placeholder="Name" name="name" />
+                </div>
 
-            <div className="flex gap-4">
-                <label className="w-24" htmlFor="description">
-                    Description
-                </label>
-                <input id="description" className="border rounded p-2 w-full" name="description" />
+                <div className="flex gap-4">
+                    <input
+                        className={inputStyle}
+                        id="description"
+                        placeholder="Description"
+                        name="description"
+                    />
+                </div>
+
+                <div className="flex gap-4">
+                    <input className={inputStyle} id="weight" placeholder="Weight" name="weight" />
+                </div>
             </div>
 
             {/* New Ingredient chart  */}
@@ -93,13 +83,12 @@ export default function RecipeCreatePage() {
                         }
                         className="border rounded p-1 w-20"
                     />
-                    <button
+                    {/* <button
                         type="button"
                         onClick={() => {
                             const ingredientToAdd: Ingredient = {
                                 ...newIngredient,
                                 id: `item-${newIngredients.length + 1}`,
-                                recipeId: null,
                                 instructionId: null,
                             };
                             setNewIngredients([...newIngredients, ingredientToAdd]);
@@ -108,7 +97,7 @@ export default function RecipeCreatePage() {
                         className="rounded p-2 bg-blue-200"
                     >
                         +
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Existing ingredients */}
