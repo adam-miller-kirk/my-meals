@@ -21,7 +21,7 @@ model Ingredient {
   id            String       @id @default(uuid())
   name          String
   description   String?
-  weight        String
+  weight        String?
   Recipe        Recipe?      @relation(fields: [recipeId], references: [id])
   recipeId      String?
   Instruction   Instruction? @relation(fields: [instructionId], references: [id])

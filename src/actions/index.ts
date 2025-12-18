@@ -74,7 +74,6 @@ export async function createIngredient(_: { message: string }, formData: FormDat
     try {
         const name = formData.get("name");
         const description = formData.get("description");
-        const weight = formData.get("weight");
 
         if (typeof name !== "string" || name.length < 3) {
             return {
@@ -88,17 +87,10 @@ export async function createIngredient(_: { message: string }, formData: FormDat
             };
         }
 
-        if (typeof weight !== "string") {
-            return {
-                message: "Weight needs to be a string",
-            };
-        }
-
         await db.ingredient.create({
             data: {
                 name,
                 description,
-                weight,
                 recipeId: null,
                 instructionId: null,
             },
@@ -122,16 +114,13 @@ export async function editIngredient(id: string, formData: FormData) {
     // Check the user's input and make sure they are valid
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
-    const weight = formData.get("weight") as string;
-
-    console.log(`Form date ${name}, ${description} ${weight}`);
+    // const weight = formData.get("weight") as string;
 
     await db.ingredient.update({
         where: { id },
         data: {
             name,
-            description,
-            weight,
+            description
         },
     });
     revalidatePath(`/ingredients/${id}`); // data change so get new cache version

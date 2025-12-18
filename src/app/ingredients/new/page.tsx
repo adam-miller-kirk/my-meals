@@ -1,26 +1,26 @@
 "use client";
 
-import React, { useActionState, startTransition, useState } from "react";
+import React, { useActionState, startTransition } from "react";
 import { createIngredient } from "@/actions";
 
-import { Ingredient } from "@/generated/prisma";
+// import { Ingredient } from "@/generated/prisma";
 
 const inputStyle = "border rounded p-2 w-full";
 
 export default function IngredientCreatePage() {
     const [formState, action] = useActionState(createIngredient, { message: "" });
-    const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]);
-    const [newIngredient, setNewIngredient] = useState({
-        name: "",
-        description: "",
-        weight: "",
-    });
+    // const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]);
+    // const [newIngredient, setNewIngredient] = useState({
+    //     name: "",
+    //     description: "",
+    //     weight: "",
+    // });
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
-        formData.append("ingredients", JSON.stringify(newIngredients));
+        // formData.append("ingredients", JSON.stringify(newIngredients));
 
         startTransition(() => {
             action(formData);
@@ -45,17 +45,17 @@ export default function IngredientCreatePage() {
                     />
                 </div>
 
-                <div className="flex gap-4">
+                {/* <div className="flex gap-4">
                     <input className={inputStyle} id="weight" placeholder="Weight" name="weight" />
-                </div>
+                </div> */}
             </div>
 
             {/* New Ingredient chart  */}
             <div>
-                <p>New Ingredient Chart</p>
+                {/* <p>New Ingredient Chart</p> */}
 
                 {/* Top row: new ingredient inputs */}
-                <div className="flex gap-2 items-center my-1">
+                {/* <div className="flex gap-2 items-center my-1">
                     <input
                         type="text"
                         placeholder="Name"
@@ -83,7 +83,7 @@ export default function IngredientCreatePage() {
                         }
                         className="border rounded p-1 w-20"
                     />
-                    {/* <button
+                    <button
                         type="button"
                         onClick={() => {
                             const ingredientToAdd: Ingredient = {
@@ -97,11 +97,11 @@ export default function IngredientCreatePage() {
                         className="rounded p-2 bg-blue-200"
                     >
                         +
-                    </button> */}
-                </div>
+                    </button>
+                </div> */}
 
                 {/* Existing ingredients */}
-                <div className="border p-2 rounded shadow flex flex-col gap-1">
+                {/* <div className="border p-2 rounded shadow flex flex-col gap-1">
                     {newIngredients.length > 0 ? (
                         newIngredients.map((ingredient, index) => (
                             <div key={ingredient.id} className="flex gap-2 items-center my-1">
@@ -154,7 +154,7 @@ export default function IngredientCreatePage() {
                     ) : (
                         <p>No ingredients</p>
                     )}
-                </div>
+                </div> */}
             </div>
 
             {formState.message && (

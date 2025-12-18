@@ -24,7 +24,7 @@ export default async function IngredientsPage() {
                             <div className="p-2 grid grid-cols-[1fr_1fr_auto] gap-2 items-center w-full">
                                 <p className="border rounded p-1">{ingredient.name}</p>
                                 <p className="border rounded p-1">{ingredient.description}</p>
-                                <p className="border rounded p-1">{ingredient.weight}</p>
+                                {/* <p className="border rounded p-1">{ingredient.weight}</p> */}
                             </div>
                             <Link
                                 key={`${ingredient.name} ${index}`}

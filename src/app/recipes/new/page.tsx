@@ -1,46 +1,41 @@
 "use client";
 
-import React, { useActionState, startTransition, useState } from "react";
+import React, { useActionState, startTransition } from "react";
 import { createRecipe } from "@/actions";
 
-import { Ingredient } from "@/generated/prisma";
+// import { Ingredient } from "@/generated/prisma";
 
 export default function RecipeCreatePage() {
     const [formState, action] = useActionState(createRecipe, { message: "" });
-    const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]);
-    const [newIngredient, setNewIngredient] = useState({
-        name: "",
-        description: "",
-        weight: "",
-    });
+    // const [newIngredients, setNewIngredients] = useState<Ingredient[]>([]);
+    // const [newIngredient, setNewIngredient] = useState({
+    //     name: "",
+    //     description: "",
+    //     weight: "",
+    // });
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        console.log(event.currentTarget);
         const formData = new FormData(event.currentTarget);
-        console.log("page formDate", formData);
-
-        formData.append("ingredients", JSON.stringify(newIngredients));
-
-        console.log("newIngredients", newIngredients);
+        // formData.append("ingredients", JSON.stringify(newIngredients));
 
         startTransition(() => {
             action(formData);
         });
     }
 
-    function increaseIngredient() {
-        const newIngredient: Ingredient = {
-            id: `item-${newIngredients.length + 1}`,
-            name: `item-${newIngredients.length + 1}`,
-            description: null,
-            weight: "",
-            recipeId: null,
-            instructionId: null,
-        };
-        setNewIngredients([...newIngredients, newIngredient]);
-    }
+    // function increaseIngredient() {
+    //     const newIngredient: Ingredient = {
+    //         id: `item-${newIngredients.length + 1}`,
+    //         name: `item-${newIngredients.length + 1}`,
+    //         description: null,
+    //         weight: "",
+    //         recipeId: null,
+    //         instructionId: null,
+    //     };
+    //     setNewIngredients([...newIngredients, newIngredient]);
+    // }
 
     return (
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
@@ -62,10 +57,10 @@ export default function RecipeCreatePage() {
 
             {/* New Ingredient chart  */}
             <div>
-                <p>New Ingredient Chart</p>
+                {/* <p>New Ingredient Chart</p> */}
 
                 {/* Top row: new ingredient inputs */}
-                <div className="flex gap-2 items-center my-1">
+                {/* <div className="flex gap-2 items-center my-1">
                     <input
                         type="text"
                         placeholder="Name"
@@ -109,10 +104,10 @@ export default function RecipeCreatePage() {
                     >
                         +
                     </button>
-                </div>
+                </div> */}
 
                 {/* Existing ingredients */}
-                <div className="border p-2 rounded shadow flex flex-col gap-1">
+                {/* <div className="border p-2 rounded shadow flex flex-col gap-1">
                     {newIngredients.length > 0 ? (
                         newIngredients.map((ingredient, index) => (
                             <div key={ingredient.id} className="flex gap-2 items-center my-1">
@@ -165,7 +160,7 @@ export default function RecipeCreatePage() {
                     ) : (
                         <p>No ingredients</p>
                     )}
-                </div>
+                </div> */}
             </div>
 
             {formState.message && (
