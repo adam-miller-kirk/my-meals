@@ -163,28 +163,39 @@ export async function createShoppingList(
     }
 }
 
-export async function editShoppingList(id: string, formData: FormData) {
+export async function editShoppingList(
+    prevState: { message: string },
+    formData: FormData
+) {
     try {
+        const id = formData.get("id") as string;
         const ingredients = formData.getAll("ingredients[]");
-        
+
+        if (!id) {
+            return { message: "Missing shopping list id" };
+        }
+
         if (
             !Array.isArray(ingredients) ||
             ingredients.length === 0 ||
             !ingredients.every(i => typeof i === "string")
         ) {
-            return { message: "Must include at least 1 ingredients" };
+            return { message: "Must include at least 1 ingredient" };
         }
 
-        await db.shoppingList.update({ where: { id }, data: {ingredients }});
+        await db.shoppingList.update({
+            where: { id },
+            data: { ingredients },
+        });
 
-        revalidatePath(`/shoppingList/${id}`); // data change so get new cache version
+        revalidatePath(`/shoppingList/${id}`);
         redirect(`/shoppingList/${id}`);
+
     } catch (err: unknown) {
         if (err instanceof Error) {
             return { message: err.message };
-        } else {
-            return { message: "Could not update shopping list."  };
         }
+        return { message: "Could not update shopping list." };
     }
 }
 

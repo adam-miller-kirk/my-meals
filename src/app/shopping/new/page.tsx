@@ -3,11 +3,10 @@
 import React, { useActionState, startTransition, useState } from "react";
 import { createShoppingList } from "@/actions";
 
-export default function IngredientCreatePage() {
+export default function NewShoppingListPage() {
     const [formState, action] = useActionState<{ message: string }, FormData>(createShoppingList, { message: "" });
     const [newShoppingList, setNewShoppingList] = useState<string[]>([]);
     const [newShoppingItem, setNewShoippingItem] = useState("");
-
     
     function addItem() {
         if (!newShoppingItem.trim()) return;
@@ -23,10 +22,8 @@ export default function IngredientCreatePage() {
 
     return (
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-            <h3 className="font-bold">Create a shopping item</h3>
-
             <div>
-                <h1 className="font-bold">New Shopping Item Chart</h1>
+                <h1 className="font-bold">New Shopping Item</h1>
 
                 {/* Top row: new ingredient inputs */}
                 <div className="flex gap-2 items-center my-1">

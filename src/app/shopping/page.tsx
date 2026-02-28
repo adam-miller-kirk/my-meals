@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import Link from "next/link";
 
-export default async function ShoppingListPage() {
+export default async function CurrentShoppingListPage() {
     const shoppingList = await db.shoppingList.findFirst({ orderBy:  { createdAt: "desc" }});
 
     const ingredients = shoppingList?.ingredients || [];
@@ -12,7 +12,7 @@ export default async function ShoppingListPage() {
                 <h1 className="text-xl font-bold">Ingredients Page</h1>
                 <div>
                     { shoppingList?.id && (
-                        <Link href={`/shopping/${shoppingList.id}`} className="border p-2 rounded mr-2">
+                        <Link href={`/shopping/${shoppingList.id}/edit`} className="border p-2 rounded mr-2">
                             Edit
                         </Link>
                     ) }
