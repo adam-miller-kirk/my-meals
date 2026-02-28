@@ -151,9 +151,6 @@ export async function createShoppingList(
         }
 
         await db.shoppingList.create({ data: { ingredients }});
-
-        revalidatePath("/shoppingList"); // data change so get new cache version
-        redirect("/shoppingList");
     } catch (err: unknown) {
         if (err instanceof Error) {
             return { message: err.message };
@@ -161,19 +158,19 @@ export async function createShoppingList(
             return { message: "Something went wrong." };
         }
     }
+    
+    revalidatePath("/shopping"); // data change so get new cache version
+    redirect("/shopping");
 }
 
 export async function editShoppingList(
-    prevState: { message: string },
-    formData: FormData
+  _: { message: string }, // if using useActionState
+  formData: FormData
 ) {
-    try {
-        const id = formData.get("id") as string;
-        const ingredients = formData.getAll("ingredients[]");
+    const id = formData.get("id") as string;
 
-        if (!id) {
-            return { message: "Missing shopping list id" };
-        }
+    try {
+        const ingredients = formData.getAll("ingredients[]");
 
         if (
             !Array.isArray(ingredients) ||
@@ -187,16 +184,16 @@ export async function editShoppingList(
             where: { id },
             data: { ingredients },
         });
-
-        revalidatePath(`/shoppingList/${id}`);
-        redirect(`/shoppingList/${id}`);
-
-    } catch (err: unknown) {
+    } catch (err) {
         if (err instanceof Error) {
             return { message: err.message };
         }
+
         return { message: "Could not update shopping list." };
     }
+
+    revalidatePath(`/shopping`);
+    redirect(`/shopping`);
 }
 
 export async function deleteShoppingListRecipe(id: string) {
@@ -204,6 +201,6 @@ export async function deleteShoppingListRecipe(id: string) {
         where: { id },
     });
 
-    revalidatePath("/shoppingList"); // data change so get new cache version
-    redirect("/shoppingList");
+    revalidatePath("/shopping"); // data change so get new cache version
+    redirect("/shopping");
 }
