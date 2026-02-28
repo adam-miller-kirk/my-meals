@@ -17,6 +17,12 @@ enum DayType {
   OTHER
 }
 
+model ShoppingList {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  ingredients String[]
+}
+
 model Ingredient {
   id            String       @id @default(uuid())
   name          String

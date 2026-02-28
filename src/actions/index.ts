@@ -120,7 +120,7 @@ export async function editIngredient(id: string, formData: FormData) {
         where: { id },
         data: {
             name,
-            description
+            description,
         },
     });
     revalidatePath(`/ingredients/${id}`); // data change so get new cache version
@@ -133,4 +133,66 @@ export async function deleteIngredient(id: string) {
     });
     revalidatePath("/ingredients"); // data change so get new cache version
     redirect("/ingredients");
+}
+
+export async function createShoppingList(
+  _: { message: string },
+  formData: FormData
+): Promise<{ message: string }> {
+    try {
+        const ingredients = formData.getAll("ingredients[]");
+
+        if (
+            !Array.isArray(ingredients) ||
+            ingredients.length === 0 ||
+            !ingredients.every(i => typeof i === "string")
+        ) {
+            return { message: "Must include at least 1 ingredients" };
+        }
+
+        await db.shoppingList.create({ data: { ingredients }});
+
+        revalidatePath("/shoppingList"); // data change so get new cache version
+        redirect("/shoppingList");
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            return { message: err.message };
+        } else {
+            return { message: "Something went wrong." };
+        }
+    }
+}
+
+export async function editShoppingList(id: string, formData: FormData) {
+    try {
+        const ingredients = formData.getAll("ingredients[]");
+        
+        if (
+            !Array.isArray(ingredients) ||
+            ingredients.length === 0 ||
+            !ingredients.every(i => typeof i === "string")
+        ) {
+            return { message: "Must include at least 1 ingredients" };
+        }
+
+        await db.shoppingList.update({ where: { id }, data: {ingredients }});
+
+        revalidatePath(`/shoppingList/${id}`); // data change so get new cache version
+        redirect(`/shoppingList/${id}`);
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            return { message: err.message };
+        } else {
+            return { message: "Could not update shopping list."  };
+        }
+    }
+}
+
+export async function deleteShoppingListRecipe(id: string) {
+    await db.shoppingList.delete({
+        where: { id },
+    });
+
+    revalidatePath("/shoppingList"); // data change so get new cache version
+    redirect("/shoppingList");
 }
