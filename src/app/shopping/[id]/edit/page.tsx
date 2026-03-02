@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import EditForm from "./EditForm";
+import type { CreateShoppingItem } from "@/types/shoppingList";
 
 export default async function Page({
   params,
@@ -10,12 +11,14 @@ export default async function Page({
 
   const shoppingList = await db.shoppingList.findUnique({
     where: { id },
+    include: { shoppingItems: true },
   });
 
-  return (
-    <EditForm
-      id={id}
-      initialIngredients={shoppingList?.ingredients || []}
-    />
-  );
+  const initialItems: CreateShoppingItem[] =
+    shoppingList?.shoppingItems.map((item) => ({
+      name: item.name,
+      group: item.group,
+    })) || [];
+
+  return <EditForm id={id} initialItems={initialItems} />;
 }

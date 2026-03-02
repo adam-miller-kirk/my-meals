@@ -3,6 +3,7 @@
 import { db } from "@/db";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { ShoppingGroup } from "@/generated/prisma";
 
 export async function createRecipe(_: { message: string }, formData: FormData) {
     try {
@@ -139,61 +140,112 @@ export async function createShoppingList(
   _: { message: string },
   formData: FormData
 ): Promise<{ message: string }> {
-    try {
-        const ingredients = formData.getAll("ingredients[]");
+  try {
+    const rawItems = formData.get("items");
 
-        if (
-            !Array.isArray(ingredients) ||
-            ingredients.length === 0 ||
-            !ingredients.every(i => typeof i === "string")
-        ) {
-            return { message: "Must include at least 1 ingredients" };
-        }
-
-        await db.shoppingList.create({ data: { ingredients }});
-    } catch (err: unknown) {
-        if (err instanceof Error) {
-            return { message: err.message };
-        } else {
-            return { message: "Something went wrong." };
-        }
+    if (!rawItems || typeof rawItems !== "string") {
+      return { message: "Must include at least 1 shopping item" };
     }
-    
-    revalidatePath("/shopping"); // data change so get new cache version
-    redirect("/shopping");
+
+    const shoppingItems = JSON.parse(rawItems);
+
+    if (!Array.isArray(shoppingItems) || shoppingItems.length === 0) {
+      return { message: "Must include at least 1 shopping item" };
+    }
+
+    // Basic validation
+    if (
+      !shoppingItems.every(
+        (item) =>
+          typeof item.name === "string" &&
+          item.name.trim().length > 0 &&
+          Object.values(ShoppingGroup).includes(item.group)
+      )
+    ) {
+      return { message: "Invalid shopping item data" };
+    }
+
+    await db.shoppingList.create({
+      data: {
+        shoppingItems: {
+          create: shoppingItems.map((item) => ({
+            name: item.name.trim(),
+            group: item.group,
+            // checked defaults to false automatically
+          })),
+        },
+      },
+    });
+
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return { message: err.message };
+    } else {
+      return { message: "Something went wrong." };
+    }
+  }
+
+  revalidatePath("/shopping");
+  redirect("/shopping");
 }
 
 export async function editShoppingList(
-  _: { message: string }, // if using useActionState
+  _: { message: string },
   formData: FormData
 ) {
     const id = formData.get("id") as string;
 
-    try {
-        const ingredients = formData.getAll("ingredients[]");
-
-        if (
-            !Array.isArray(ingredients) ||
-            ingredients.length === 0 ||
-            !ingredients.every(i => typeof i === "string")
-        ) {
-            return { message: "Must include at least 1 ingredient" };
-        }
-
-        await db.shoppingList.update({
-            where: { id },
-            data: { ingredients },
-        });
-    } catch (err) {
-        if (err instanceof Error) {
-            return { message: err.message };
-        }
-
-        return { message: "Could not update shopping list." };
+    if (!id) {
+    return { message: "Missing shopping list ID." };
     }
 
-    revalidatePath(`/shopping`);
-    redirect(`/shopping`);
+    try {
+    const rawItems = formData.get("items");
+
+    if (!rawItems || typeof rawItems !== "string") {
+        return { message: "Must include at least 1 shopping item" };
+    }
+
+    const shoppingItems = JSON.parse(rawItems);
+
+    if (!Array.isArray(shoppingItems) || shoppingItems.length === 0) {
+        return { message: "Must include at least 1 shopping item" };
+    }
+
+    if (
+        !shoppingItems.every(
+        (item) =>
+            typeof item.name === "string" &&
+            item.name.trim().length > 0 &&
+            typeof item.group === "string"
+        )
+    ) {
+        return { message: "Invalid shopping item data" };
+    }
+
+    await db.shoppingList.update({
+        where: { id },
+        data: {
+        shoppingItems: {
+            deleteMany: {}, // delete all existing items
+            create: shoppingItems.map((item) => ({
+            name: item.name.trim(),
+            group: item.group,
+            })),
+        },
+        },
+    });
+
+    } catch (err) {
+    if (err instanceof Error) {
+        return { message: err.message };
+    }
+
+    return { message: "Could not update shopping list." };
+}
+
+  revalidatePath("/shopping");
+  redirect("/shopping");
 }
 
 export async function deleteShoppingListRecipe(id: string) {

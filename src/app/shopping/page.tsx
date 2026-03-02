@@ -4,9 +4,12 @@ import Link from "next/link";
 import IngredientToggle from "@/components/ingredientToggle";
 
 export default async function CurrentShoppingListPage() {
-    const shoppingList = await db.shoppingList.findFirst({ orderBy:  { createdAt: "desc" }});
+    const shoppingList = await db.shoppingList.findFirst({
+        orderBy: { createdAt: "desc" },
+        include: { shoppingItems: true }
+    });
 
-    const ingredients = shoppingList?.ingredients || [];
+    const shoppingItems = shoppingList?.shoppingItems || [];
 
     return (
         <div className="flex flex-col gap-2">
@@ -25,14 +28,14 @@ export default async function CurrentShoppingListPage() {
             </div>
 
             <div className="border p-2 rounded shadow flex gap-2 flex-wrap">
-                { ingredients.length > 0 ?
-                    ingredients.map((ingredient, index) => (
+                { shoppingItems.length > 0 ?
+                    shoppingItems.map((item, index) => (
                         <IngredientToggle
-                            key={`${ingredient}-${index}`}
-                            label={ingredient}
+                            key={`${item.name}-${index}`}
+                            label={item.name}
                         />
                     )) : (
-                        <p>No ingredients</p>
+                        <p>Create your first shopping list</p>
                     )
                 }
             </div>

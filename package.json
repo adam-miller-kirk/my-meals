@@ -10,6 +10,7 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier . --write",
         "db:studio": "prisma studio",
+        "db:generate": "prisma generate",
         "db:migrate": "prisma migrate dev",
         "db:reset": "prisma migrate reset"
     },

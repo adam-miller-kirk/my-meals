@@ -2,20 +2,23 @@
 
 import React, { useActionState, startTransition, useState } from "react";
 import { createShoppingList } from "@/actions";
+import { CreateShoppingItem, ShoppingGroup } from "@/types/shoppingList";
+import { capitaliseWords } from "@/utils/wordFormatter";
+
+const defaultShoppingItem: CreateShoppingItem = { name: "", group: ShoppingGroup.Unassigned }
 
 export default function NewShoppingListPage() {
     const [formState, action] = useActionState<{ message: string }, FormData>(createShoppingList, { message: "" });
-    const [newShoppingList, setNewShoppingList] = useState<string[]>([]);
-    const [newShoppingItem, setNewShoippingItem] = useState("");
+    const [newShoppingList, setNewShoppingList] = useState<CreateShoppingItem[]>([]);
+    const [newShoppingItem, setNewShoippingItem] = useState<CreateShoppingItem>(defaultShoppingItem);
     
     function addItem() {
-        if (!newShoppingItem.trim()) return;
+        const { name } = newShoppingItem;
         
-        // Ensure first char is capital
-        const formattedNewShoppingItem = newShoppingItem[0].toUpperCase() + newShoppingItem.slice(1);
-
-        setNewShoppingList([formattedNewShoppingItem, ...newShoppingList]);
-        setNewShoippingItem("");
+        if (!newShoppingItem.name.trim()) return;
+        
+        setNewShoppingList([{ ...newShoppingItem, name:  capitaliseWords(name)}, ...newShoppingList]);
+        setNewShoippingItem({ name: "", group: newShoppingItem.group});
     }
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -42,19 +45,42 @@ export default function NewShoppingListPage() {
 
                 {/* Top row: new ingredient inputs */}
                 <div className="flex gap-2 items-center my-1">
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={newShoppingItem}
-                        onChange={(e) => setNewShoippingItem(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                e.preventDefault(); // stop form submit
-                                addItem();
+                    <div className="flex flex-col gap-2 w-full">
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={newShoppingItem.name}
+                            onChange={(e) =>
+                                setNewShoippingItem((prev) => ({
+                                    ...prev,
+                                    name: e.target.value,
+                                }))
                             }
-                        }}
-                        className="border rounded p-1"
-                    />
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault(); // stop form submit
+                                    addItem();
+                                }
+                            }}
+                            className="border rounded p-1"
+                        />
+                        <select
+                            value={newShoppingItem.group}
+                            onChange={(e) =>
+                                setNewShoippingItem((prev) => ({
+                                ...prev,
+                                group: e.target.value as ShoppingGroup,
+                                }))
+                            }
+                            className="border rounded p-1"
+                            >
+                            {Object.values(ShoppingGroup).map((group) => (
+                                <option key={group} value={group}>
+                                {group}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     <button
                         type="button"
                         onClick={addItem}
@@ -64,19 +90,29 @@ export default function NewShoppingListPage() {
                     </button>
                 </div>
 
+                {/* The true object we pass through */}
+                <input
+                    type="hidden"
+                    name="items"
+                    value={JSON.stringify(newShoppingList)}
+                />
+
                 <h1 className="font-bold">New Shopping List</h1>
                 <div className="border p-2 rounded shadow flex flex-wrap gap-2">
                     {newShoppingList.length > 0 ? (
-                        newShoppingList.map((ingredient, index) => (
-                            <div key={`${ingredient}-${index}`} className="flex gap-2 items-center py-2 px-4  rounded">
+                        newShoppingList.map((shoppingItem, index) => (
+                            <div key={`${shoppingItem.name}-${index}`} className="flex gap-2 items-center py-2 px-4  rounded">
                                 <input
                                     name="ingredients[]"
                                     type="text"
                                     placeholder="Name"
-                                    value={ingredient}
+                                    value={shoppingItem.name}
                                     onChange={(e) => {
                                         const updated = [...newShoppingList];
-                                        updated[index] = e.target.value;
+                                        updated[index] = {
+                                            ...updated[index],
+                                            name: e.target.value,
+                                        };
                                         setNewShoppingList(updated);
                                     }}
                                 />
@@ -94,7 +130,7 @@ export default function NewShoppingListPage() {
                             </div>
                         ))
                     ) : (
-                        <p>No ingredients</p>
+                        <p>Add a shopping item</p>
                     )}
                 </div>
             </div>

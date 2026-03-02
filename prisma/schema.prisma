@@ -2,79 +2,101 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+    provider = "prisma-client-js"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 enum DayType {
-  RECIPE
-  TAKEAWAY
-  OTHER
+    RECIPE
+    TAKEAWAY
+    OTHER
+}
+
+enum ShoppingGroup {
+    Unassigned
+    FruitVeg
+    Meat
+    Bakery
+    Cupboard
+    FridgeFreezer
 }
 
 model ShoppingList {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  ingredients String[]
+    id            String         @id @default(uuid())
+    createdAt     DateTime       @default(now())
+    shoppingItems ShoppingItem[]
+}
+
+model ShoppingItem {
+    id      String        @id @default(uuid())
+    name    String
+    checked Boolean       @default(false)
+    group   ShoppingGroup @default(Unassigned)
+
+    list   ShoppingList @relation(fields: [listId], references: [id])
+    listId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Ingredient {
-  id            String       @id @default(uuid())
-  name          String
-  description   String?
-  weight        String?
-  Recipe        Recipe?      @relation(fields: [recipeId], references: [id])
-  recipeId      String?
-  Instruction   Instruction? @relation(fields: [instructionId], references: [id])
-  instructionId String?
+    id            String       @id @default(uuid())
+    name          String
+    description   String?
+    weight        String?
+    Recipe        Recipe?      @relation(fields: [recipeId], references: [id])
+    recipeId      String?
+    Instruction   Instruction? @relation(fields: [instructionId], references: [id])
+    instructionId String?
 }
 
 model Instruction {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  time        String
-  ingredients Ingredient[]
-  Recipe      Recipe?      @relation(fields: [recipeId], references: [id])
-  recipeId    String?
+    id          String       @id @default(uuid())
+    name        String
+    description String?
+    time        String
+    ingredients Ingredient[]
+    Recipe      Recipe?      @relation(fields: [recipeId], references: [id])
+    recipeId    String?
 }
 
 model Recipe {
-  id           String        @id @default(uuid())
-  name         String
-  description  String?
-  ingredients  Ingredient[]
-  instructions Instruction[]
-  plannerDays  PlannerDay[]
+    id           String        @id @default(uuid())
+    name         String
+    description  String?
+    ingredients  Ingredient[]
+    instructions Instruction[]
+    plannerDays  PlannerDay[]
 }
 
 model PlannerDay {
-  id          String      @id @default(uuid())
-  date        DateTime    @unique
-  type        DayType // ENUM: RECIPE, TAKEAWAY, OTHER
-  recipe      Recipe?     @relation(fields: [recipeId], references: [id])
-  recipeId    String?
-  notes       String?
-  plannerWeek PlannerWeek @relation(fields: [weekId], references: [id])
-  weekId      String
+    id          String      @id @default(uuid())
+    date        DateTime    @unique
+    type        DayType // ENUM: RECIPE, TAKEAWAY, OTHER
+    recipe      Recipe?     @relation(fields: [recipeId], references: [id])
+    recipeId    String?
+    notes       String?
+    plannerWeek PlannerWeek @relation(fields: [weekId], references: [id])
+    weekId      String
 }
 
 model PlannerWeek {
-  id          String       @id @default(uuid())
-  startDate   DateTime // e.g. Monday of the week
-  year        Int
-  plannerDays PlannerDay[]
-  plannerYear PlannerYear  @relation(fields: [yearId], references: [id])
-  yearId      String
+    id          String       @id @default(uuid())
+    startDate   DateTime // e.g. Monday of the week
+    year        Int
+    plannerDays PlannerDay[]
+    plannerYear PlannerYear  @relation(fields: [yearId], references: [id])
+    yearId      String
 }
 
 model PlannerYear {
-  id           String        @id @default(uuid())
-  year         Int           @unique
-  plannerWeeks PlannerWeek[]
+    id           String        @id @default(uuid())
+    year         Int           @unique
+    plannerWeeks PlannerWeek[]
 }

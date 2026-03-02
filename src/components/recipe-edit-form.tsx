@@ -9,8 +9,6 @@ interface RecipeEditFormProps {
 }
 
 export default function RecipeEditForm({ recipe }: RecipeEditFormProps) {
-    console.log(recipe);
-
     const handleEdit = (formData: FormData) => {
         // startTransition ensures that the action is done in order
         startTransition(async () => {
