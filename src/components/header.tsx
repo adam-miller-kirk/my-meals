@@ -16,18 +16,18 @@ export default function Header() {
             <Link href="/" className={linkClass("/")}>
                 Home
             </Link>
-            <Link href="/planning" className={linkClass("/planning")}>
+            {/* <Link href="/planning" className={linkClass("/planning")}>
                 Planning
-            </Link>
+            </Link> */}
             <Link href="/shopping" className={linkClass("/shopping")}>
                 Shopping
             </Link>
             <Link href="/recipes" className={linkClass("/recipes")}>
                 Recipes
             </Link>
-            <Link href="/ingredients" className={linkClass("/ingredients")}>
+            {/* <Link href="/ingredients" className={linkClass("/ingredients")}>
                 Ingredients
-            </Link>
+            </Link> */}
         </div>
     );
 }

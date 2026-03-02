@@ -1,6 +1,8 @@
 import { db } from "@/db";
 import Link from "next/link";
 
+import IngredientToggle from "@/components/ingredientToggle";
+
 export default async function CurrentShoppingListPage() {
     const shoppingList = await db.shoppingList.findFirst({ orderBy:  { createdAt: "desc" }});
 
@@ -25,9 +27,10 @@ export default async function CurrentShoppingListPage() {
             <div className="border p-2 rounded shadow flex gap-2 flex-wrap">
                 { ingredients.length > 0 ?
                     ingredients.map((ingredient, index) => (
-                        <div key={`${ingredient}-${index}`} className="flex gap-2 items-center my-1 bg-blue-200 py-2 px-4 rounded">
-                            {ingredient}
-                        </div>
+                        <IngredientToggle
+                            key={`${ingredient}-${index}`}
+                            label={ingredient}
+                        />
                     )) : (
                         <p>No ingredients</p>
                     )

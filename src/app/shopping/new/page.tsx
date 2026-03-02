@@ -10,7 +10,11 @@ export default function NewShoppingListPage() {
     
     function addItem() {
         if (!newShoppingItem.trim()) return;
-        setNewShoppingList([...newShoppingList, newShoppingItem]);
+        
+        // Ensure first char is capital
+        const formattedNewShoppingItem = newShoppingItem[0].toUpperCase() + newShoppingItem.slice(1);
+
+        setNewShoppingList([formattedNewShoppingItem, ...newShoppingList]);
         setNewShoippingItem("");
     }
 
@@ -22,6 +26,17 @@ export default function NewShoppingListPage() {
 
     return (
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+
+            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
+                Create
+            </button>
+
+            {formState.message && (
+                <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+                    {formState.message}
+                </div>
+            )}
+
             <div>
                 <h1 className="font-bold">New Shopping Item</h1>
 
@@ -85,15 +100,7 @@ export default function NewShoppingListPage() {
             </div>
 
 
-            {formState.message && (
-                <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
-                    {formState.message}
-                </div>
-            )}
 
-            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-                Create
-            </button>
         </form>
     );
 }
