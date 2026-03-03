@@ -2,7 +2,7 @@ import ShoppingItemToggle from "@/features/shoppingList/components/shoppingItemT
 import { db } from "@/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { shoppingGroupLabels, shoppingGroupOrder } from "@/features/shoppingList/model/constant";
+import { shoppingGroupLabels, shoppingGroupOrder } from "@/features/shoppingList/model/constants";
 import { ShoppingGroup } from "@/generated/prisma";
 
 export default async function ShoppingListPage({ params }: { params: Promise<{ id: string }> }) {
