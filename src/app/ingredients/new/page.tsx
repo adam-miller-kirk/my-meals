@@ -1,9 +1,7 @@
 "use client";
 
+import { createIngredient } from "@/features/ingredients/actions/creteIngredients";
 import React, { useActionState, startTransition } from "react";
-import { createIngredient } from "@/actions";
-
-// import { Ingredient } from "@/generated/prisma";
 
 const inputStyle = "border rounded p-2 w-full";
 

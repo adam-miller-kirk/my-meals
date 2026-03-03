@@ -1,7 +1,7 @@
 "use client";
 
+import { createRecipe } from "@/features/recipes/actions/creteRecipe";
 import React, { useActionState, startTransition } from "react";
-import { createRecipe } from "@/actions";
 
 // import { Ingredient } from "@/generated/prisma";
 

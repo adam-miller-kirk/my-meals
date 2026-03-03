@@ -1,7 +1,7 @@
 "use client";
 
+import { editRecipe } from "@/features/recipes/actions/editRecipe";
 import type { Recipe } from "@/generated/prisma";
-import { editRecipe } from "@/actions";
 import { startTransition } from "react";
 
 interface RecipeEditFormProps {

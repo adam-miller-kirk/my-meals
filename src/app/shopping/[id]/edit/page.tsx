@@ -1,24 +1,32 @@
 import { db } from "@/db";
-import EditForm from "./EditForm";
-import type { CreateShoppingItem } from "@/types/shoppingList";
+import { editShoppingList } from "@/features/shoppingList/actions/editShoppingList";
+import { ShoppingItemBaseProps } from "@/features/shoppingList/model/types";
+import ShoppingListForm from "@/features/shoppingList/components/shoppingListForm";
+import { redirect } from "next/navigation";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
 
-  const shoppingList = await db.shoppingList.findUnique({
-    where: { id },
-    include: { shoppingItems: true },
-  });
+    const shoppingList = await db.shoppingList.findUnique({
+        where: { id },
+        include: { shoppingItems: true },
+    });
 
-  const initialItems: CreateShoppingItem[] =
-    shoppingList?.shoppingItems.map((item) => ({
-      name: item.name,
-      group: item.group,
-    })) || [];
+    if (!shoppingList) {
+        redirect("/shopping/new");
+    }
 
-  return <EditForm id={id} initialItems={initialItems} />;
+    const initialItems: ShoppingItemBaseProps[] = shoppingList.shoppingItems.map((item) => ({
+        name: item.name,
+        group: item.group,
+    }));
+
+    return (
+        <ShoppingListForm
+            initialItems={initialItems}
+            action={editShoppingList}
+            submitLabel="Update"
+            id={id}
+        />
+    );
 }

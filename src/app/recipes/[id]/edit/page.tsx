@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import RecipeEditForm from "@/components/recipe-edit-form";
+import RecipeEditForm from "@/features/recipes/components/recipe-edit-form";
 
 interface RecipeEditProps {
     params: Promise<{

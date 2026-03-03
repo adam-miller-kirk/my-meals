@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { deleteIngredient } from "@/actions";
+import { deleteIngredient } from "@/features/ingredients/actions/deleteIngredients";
 
 interface IngredientPageProps {
     params: Promise<{

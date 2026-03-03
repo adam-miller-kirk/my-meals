@@ -1,6 +1,6 @@
 import { db } from "@/db";
+import { deleteIngredient } from "@/features/ingredients/actions/deleteIngredients";
 import Link from "next/link";
-import { deleteIngredient } from "@/actions";
 
 export default async function IngredientsPage() {
     const ingredients = await db.ingredient.findMany();
