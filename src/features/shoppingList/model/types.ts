@@ -26,3 +26,8 @@ export type ParsedShoppingItem = {
 export type ParseShoppingItemsResult =
     | { success: true; shoppingItems: ParsedShoppingItem[] }
     | { success: false; error: string };
+
+export type shoppingItemToggleProps = {
+    label: string;
+    checked?: boolean;
+};
