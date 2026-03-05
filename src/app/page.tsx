@@ -1,9 +1,10 @@
-import Calendar from "@/components/calendar";
+import Calendar from "@/components/Calendar";
+import { CalendarMode } from "@/components/Calendar/types";
 
 export default function HomePage() {
     return (
         <>
-            <Calendar />
+            <Calendar mode={CalendarMode.DAY} controls={false} />
         </>
     );
 }

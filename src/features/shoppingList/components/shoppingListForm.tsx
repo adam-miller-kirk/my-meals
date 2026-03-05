@@ -12,6 +12,7 @@ import {
     shoppingGroupOrder,
 } from "@/features/shoppingList/model/constants";
 import { buildUpdatedShoppingList } from "../model/utils";
+import Button from "@/components/Button";
 
 export default function ShoppingListForm({
     initialItems,
@@ -47,9 +48,7 @@ export default function ShoppingListForm({
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-                {submitLabel}
-            </button>
+            <Button type="submit">{submitLabel}</Button>
 
             {formState.message && (
                 <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
@@ -61,39 +60,40 @@ export default function ShoppingListForm({
             <h1 className="font-bold">New Shopping Item</h1>
             <div className="flex gap-2 items-center my-1">
                 <div className="flex flex-col gap-2 w-full">
-                <input
-                    type="text"
-                    placeholder="Name"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem((prev) => ({ ...prev, name: e.target.value }))}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            addItem();
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={newItem.name}
+                        onChange={(e) => setNewItem((prev) => ({ ...prev, name: e.target.value }))}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                addItem();
+                            }
+                        }}
+                        className="border rounded p-1"
+                    />
+                    <select
+                        value={newItem.group}
+                        onChange={(e) =>
+                            setNewItem((prev) => ({
+                                ...prev,
+                                group: e.target.value as ShoppingGroup,
+                            }))
                         }
-                    }}
-                    className="border rounded p-1"
-                />
-                <select
-                    value={newItem.group}
-                    onChange={(e) =>
-                        setNewItem((prev) => ({ ...prev, group: e.target.value as ShoppingGroup }))
-                    }
-                    className="border rounded p-1"
-                >
-                    {Object.values(ShoppingGroup).map((group) => (
-                        <option key={group} value={group}>
-                            {shoppingGroupLabels[group]}
-                        </option>
-                    ))}
-                </select>
+                        className="border rounded p-1"
+                    >
+                        {Object.values(ShoppingGroup).map((group) => (
+                            <option key={group} value={group}>
+                                {shoppingGroupLabels[group]}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-                <button type="button" onClick={addItem} className="rounded p-2 bg-blue-200">
-                    +
-                </button>
+                <Button type="button" onClick={addItem}>+</Button>
             </div>
 
-           {/* new list items section */}
+            {/* new list items section */}
             {shoppingGroupOrder.map((group) => {
                 const groupItems = groupedItems[group];
                 if (!groupItems || groupItems.length === 0) return null;
@@ -121,13 +121,13 @@ export default function ShoppingListForm({
                                         }}
                                         className="border rounded p-1 flex-1"
                                     />
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={() => setItems(items.filter((i) => i !== item))}
                                         className="bg-red-200 p-1 rounded w-10"
                                     >
                                         X
-                                    </button>
+                                    </Button>
                                 </div>
                             ))}
                         </div>

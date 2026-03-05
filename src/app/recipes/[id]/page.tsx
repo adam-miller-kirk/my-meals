@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { deleteRecipe } from "@/features/recipes/actions/deleteRecipe";
+import Button from "@/components/Button";
 
 interface RecipePageProps {
     params: Promise<{
@@ -37,7 +38,7 @@ export default async function RecipePage(props: RecipePageProps) {
                         Edit
                     </Link>
                     <form action={deleteRecipeAction}>
-                        <button className="p-2 border rounded">Delete</button>
+                        <Button>Delete</Button>
                     </form>
                 </div>
             </div>

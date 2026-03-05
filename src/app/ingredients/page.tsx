@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import { db } from "@/db";
 import { deleteIngredient } from "@/features/ingredients/actions/deleteIngredients";
 import Link from "next/link";
@@ -34,9 +35,9 @@ export default async function IngredientsPage() {
                                 View
                             </Link>
                             <form action={deleteIngredient.bind(null, ingredient.id)}>
-                                <button className="p-2 border rounded w-20 bg-red-200 cursor-pointer">
+                                <Button className="p-2 border rounded w-20 bg-red-200 cursor-pointer">
                                     Delete
-                                </button>
+                                </Button>
                             </form>
                         </div>
                     ))

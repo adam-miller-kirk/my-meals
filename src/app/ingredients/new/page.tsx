@@ -2,6 +2,7 @@
 
 import { createIngredient } from "@/features/ingredients/actions/creteIngredients";
 import React, { useActionState, startTransition } from "react";
+import Button from "@/components/Button";
 
 const inputStyle = "border rounded p-2 w-full";
 
@@ -161,9 +162,7 @@ export default function IngredientCreatePage() {
                 </div>
             )}
 
-            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-                Create
-            </button>
+            <Button type="submit">Save</Button>
         </form>
     );
 }

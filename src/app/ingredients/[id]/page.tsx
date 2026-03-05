@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { deleteIngredient } from "@/features/ingredients/actions/deleteIngredients";
+import Button from "@/components/Button";
 
 interface IngredientPageProps {
     params: Promise<{
@@ -40,7 +41,7 @@ export default async function IngredientPage(props: IngredientPageProps) {
                         Edit
                     </Link>
                     <form action={deleteIngredientAction}>
-                        <button className="p-2 border rounded">Delete</button>
+                        <Button>Delete</Button>
                     </form>
                 </div>
             </div>

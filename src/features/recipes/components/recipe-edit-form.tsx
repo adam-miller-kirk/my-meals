@@ -3,6 +3,7 @@
 import { editRecipe } from "@/features/recipes/actions/editRecipe";
 import type { Recipe } from "@/generated/prisma";
 import { startTransition } from "react";
+import Button from "@/components/Button";
 
 interface RecipeEditFormProps {
     recipe: Recipe;
@@ -42,9 +43,7 @@ export default function RecipeEditForm({ recipe }: RecipeEditFormProps) {
                 />
             </div>
 
-            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-                Save
-            </button>
+            <Button type="submit">Save</Button>
         </form>
     );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/Button";
 import { createRecipe } from "@/features/recipes/actions/creteRecipe";
 import React, { useActionState, startTransition } from "react";
 
@@ -169,9 +170,7 @@ export default function RecipeCreatePage() {
                 </div>
             )}
 
-            <button type="submit" className="rounded p-2 bg-blue-200 w-full">
-                Create
-            </button>
+            <Button type="submit">Create</Button>
         </form>
     );
 }
