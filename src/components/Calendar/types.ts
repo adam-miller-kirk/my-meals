@@ -8,5 +8,5 @@ export type CalendarProps = {
     mode?: CalendarMode;
     controls?: boolean;
     renderDay?: (date: Date) => React.ReactNode;
-    onDayClick?: (date: Date) => void;
+    onRangeChange?: (dates: Date[]) => void;
 };

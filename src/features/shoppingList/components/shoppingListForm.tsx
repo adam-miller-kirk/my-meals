@@ -90,7 +90,9 @@ export default function ShoppingListForm({
                         ))}
                     </select>
                 </div>
-                <Button type="button" onClick={addItem}>+</Button>
+                <Button type="button" onClick={addItem}>
+                    +
+                </Button>
             </div>
 
             {/* new list items section */}

@@ -89,7 +89,6 @@ model PlannerDay {
 model PlannerWeek {
     id          String       @id @default(uuid())
     startDate   DateTime // e.g. Monday of the week
-    year        Int
     plannerDays PlannerDay[]
     plannerYear PlannerYear  @relation(fields: [yearId], references: [id])
     yearId      String

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getDaysInMonth, startOfMonth, startOfWeek, addDays, format } from "date-fns";
 import { CalendarMode, CalendarProps } from "./types";
 import Button from "../Button";
@@ -17,37 +17,30 @@ export default function Calendar({
     mode = CalendarMode.WEEK,
     controls = true,
     renderDay,
-    onDayClick,
+    onRangeChange,
 }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
-    let days: Date[];
-    let textTitle: string = "";
-    let cellWidth: string = "w-full";
+    const days = useMemo(() => {
+        switch (mode) {
+            case CalendarMode.DAY:
+                return [currentDate];
 
-    switch (mode) {
-        case CalendarMode.DAY:
-            days = [currentDate];
-            textTitle = `${format(days[0], "MMM")} - ${format(days[0], "yyyy")}`;
-            break;
+            case CalendarMode.MONTH: {
+                const start = startOfMonth(currentDate);
+                const totalDays = getDaysInMonth(currentDate);
+                return Array.from({ length: totalDays }, (_, i) => addDays(start, i));
+            }
 
-        case CalendarMode.MONTH:
-            const start = startOfMonth(currentDate);
-            const totalDays = getDaysInMonth(currentDate);
-            days = Array.from({ length: totalDays }).map((_, i) => addDays(start, i));
-            textTitle = `${format(days[0], "MMM")} - ${format(days[0], "yyyy")}`;
-            cellWidth = "w-1/7";
-            console.log(start, totalDays);
-            break;
-
-        default:
-            const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-            days = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
-            textTitle = `${format(days[0], "MMM")} - ${format(days[0], "yyyy")}`;
-            break;
-    }
+            default: {
+                const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+                return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+            }
+        }
+    }, [currentDate, mode]);
 
     const changeDate = (amount: number) => {
+        console.log("Calendar - change date");
         setCurrentDate((prev) => {
             let changedBy: number = 7;
 
@@ -55,18 +48,28 @@ export default function Calendar({
                 changedBy = 1;
             }
             if (mode === CalendarMode.MONTH) {
-                changedBy = getDaysInMonth(currentDate);
+                changedBy = getDaysInMonth(prev);
             }
 
             return addDays(prev, amount * changedBy);
         });
     };
 
+    useEffect(() => {
+        onRangeChange?.(days);
+        // `onRangeChange` intentionally omitted: this effect represents a range change event.
+        // Re-running when the callback identity changes would cause unnecessary executions.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [days]);
+    
+    const textTitle = `${format(days[0], "MMM")} - ${format(days[0], "yyyy")}`;
+    const cellWidth = mode === CalendarMode.MONTH ? "w-1/7" : "w-full";
+
     return (
         <>
             {/* Calendar Controls */}
             {controls && (
-                <div className="flex justify-between">
+                <div className="flex justify-between align-items">
                     <Button onClick={() => changeDate(-1)}>{"<"}</Button>
                     <p>{textTitle}</p>
                     <Button onClick={() => changeDate(1)}>{">"}</Button>
