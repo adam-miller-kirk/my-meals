@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { getDaysInMonth, startOfMonth, startOfWeek, addDays, format } from "date-fns";
+import { startOfMonth, startOfWeek, format } from "date-fns";
 import { CalendarMode, CalendarProps } from "./types";
 import Button from "../Button";
 
@@ -12,6 +12,16 @@ const formatCalendarCellText = (date: Date, mode: CalendarMode) => {
 
     return cellFormat;
 };
+
+// Simple helpers implemented locally to avoid pulling trivial utilities from date-fns
+// (keeps dependency surface and bundle size smaller)
+const calendarAddDays = (date: Date, amount: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + amount);
+    return d;
+};
+
+const calendarGetDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
 export default function Calendar({
     mode = CalendarMode.WEEK,
@@ -28,13 +38,13 @@ export default function Calendar({
 
             case CalendarMode.MONTH: {
                 const start = startOfMonth(currentDate);
-                const totalDays = getDaysInMonth(currentDate);
-                return Array.from({ length: totalDays }, (_, i) => addDays(start, i));
+                const totalDays = calendarGetDaysInMonth(currentDate);
+                return Array.from({ length: totalDays }, (_, i) => calendarAddDays(start, i));
             }
 
             default: {
                 const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-                return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+                return Array.from({ length: 7 }, (_, i) => calendarAddDays(weekStart, i));
             }
         }
     }, [currentDate, mode]);
@@ -48,10 +58,10 @@ export default function Calendar({
                 changedBy = 1;
             }
             if (mode === CalendarMode.MONTH) {
-                changedBy = getDaysInMonth(prev);
+                changedBy = calendarGetDaysInMonth(prev);
             }
 
-            return addDays(prev, amount * changedBy);
+            return calendarAddDays(prev, amount * changedBy);
         });
     };
 
